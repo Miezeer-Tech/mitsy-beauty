@@ -44,6 +44,7 @@
 
   if (reduce || !window.gsap || !window.ScrollTrigger) return; // static fallback
   gsap.registerPlugin(ScrollTrigger);
+  ScrollTrigger.config({ ignoreMobileResize: true }); // iOS toolbar show/hide must not re-layout pins
   root.classList.add("motion");
 
   /* --- Lenis smooth scroll synced to ScrollTrigger --- */
@@ -75,10 +76,27 @@
     gsap.set(".hero__tag span", { xPercent: -12 });
     var hero = gsap.timeline({
       defaults: { ease: "none" },
-      scrollTrigger: { trigger: ".hero__pin", start: "top top", end: "+=170%", scrub: 0.6, pin: true,
+      scrollTrigger: { trigger: ".hero__pin", start: "top top", end: mobile ? "+=110%" : "+=170%", scrub: 0.6, pin: true, invalidateOnRefresh: true,
         onUpdate: function (s) { card.classList.toggle("is-scrim", s.progress > 0.55); } }
     });
-    hero
+    if (mobile) {
+      // phones: keep the whole shot visible; card grows edge-to-edge and settles mid-screen, tagline lands under it
+      var heroPin = document.querySelector(".hero__pin");
+      var dy = function () {
+        var r = card.getBoundingClientRect(), p = heroPin.getBoundingClientRect();
+        var cy = r.top + r.height / 2 - p.top - (Number(gsap.getProperty(card, "y")) || 0);
+        return heroPin.offsetHeight * 0.42 - cy;
+      };
+      var sc = function () { return innerWidth / card.offsetWidth; };
+      gsap.set(".hero__tag", { y: 40 });
+      hero
+        .to(".hero__brand", { scale: 0.9, opacity: 0, y: -50, duration: 0.45 }, 0)
+        .to(card, { y: dy, scale: sc, borderRadius: 0, duration: 0.6, ease: "power1.inOut" }, 0)
+        .fromTo(".hero__img", { scale: 1.06 }, { scale: 1, duration: 0.6 }, 0)
+        .to(".hero__tag", { opacity: 1, y: function () { return dy() + card.offsetHeight * (sc() - 1) / 2; }, duration: 0.3, ease: "power2.out" }, 0.5)
+        .to(".hero__tag span", { xPercent: 0, stagger: 0.06, duration: 0.3, ease: "power2.out" }, 0.5)
+        .to({}, { duration: 0.25 });
+    } else hero
       .to(".hero__cue", { opacity: 0, duration: 0.1 }, 0)
       .to(".hero__brand", { scale: mobile ? 1.15 : 1.35, opacity: 0, y: mobile ? -40 : -60, duration: 0.5 }, 0)
       .to(".hero__grid", { opacity: 0, duration: 0.4 }, 0)
@@ -130,8 +148,8 @@
       var gx = Number(gsap.getProperty(wand, "x")) || 0, gy = Number(gsap.getProperty(wand, "y")) || 0;
       return { x: r.left + r.width / 2 - p.left - gx, y: r.top + r.height / 2 - p.top - gy, h: r.height };
     }
-    function to(fx, fy) { return { x: function () { return innerWidth * fx - home().x; }, y: function () { return innerHeight * fy - home().y; } }; }
-    var lift = mobile ? [0.64, 0.56] : [0.40, 0.36];
+    function to(fx, fy) { return { x: function () { return pin.offsetWidth * fx - home().x; }, y: function () { return pin.offsetHeight * fy - home().y; } }; }
+    var lift = mobile ? [0.64, 0.62] : [0.40, 0.36];
     var path1 = mobile ? [[0.52, 0.76], [0.74, 0.72], [0.98, 0.64]] : [[0.46, 0.74], [0.66, 0.73], [0.90, 0.62]];
     var sw = gsap.timeline({
       defaults: { ease: "none" },
