@@ -4,6 +4,7 @@
   var KEY = "mitsy-demo-cart";
   var root, overlay, drawer, linesEl, emptyEl, subEl, toastEl;
   var lastFocus = null;
+  var justAddedId = null;
 
   function products() { return window.MITSY_PRODUCTS || []; }
   function cfg() { return window.MITSY || {}; }
@@ -48,8 +49,16 @@
     var data = load();
     var next = (parseInt(data.items[id], 10) || 0) + (qty || 1);
     data.items[id] = Math.max(1, Math.min(12, next));
+    justAddedId = id;
     save(data);
     render();
+    clearTimeout(add.tid);
+    add.tid = setTimeout(function () {
+      justAddedId = null;
+      if (!linesEl) return;
+      var row = linesEl.querySelector(".cart-line.is-just-added");
+      if (row) row.classList.remove("is-just-added");
+    }, 2400);
   }
   function clear() {
     save({ items: {} });
@@ -78,8 +87,9 @@
     linesEl.hidden = items.length === 0;
     linesEl.innerHTML = items.map(function (l) {
       var p = l.product;
+      var added = p.id === justAddedId ? " is-just-added" : "";
       return (
-        '<li class="cart-line" data-id="' + p.id + '">' +
+        '<li class="cart-line' + added + '" data-id="' + p.id + '">' +
           '<img class="cart-line__img" src="' + p.imagePng + '" alt="" width="' + p.imageWidth + '" height="' + p.imageHeight + '">' +
           '<div class="cart-line__meta">' +
             '<p class="cart-line__name">' + p.name + '</p>' +
@@ -110,6 +120,26 @@
         checkout.tabIndex = 0;
       }
     }
+    if (justAddedId && linesEl) {
+      var row = linesEl.querySelector(".cart-line.is-just-added");
+      if (row) revealLine(row);
+    }
+  }
+
+  function revealLine(row) {
+    if (!isOpen()) return;
+    var gap = 12;
+    var listRect = linesEl.getBoundingClientRect();
+    if (listRect.height < 1) return;
+    var rowRect = row.getBoundingClientRect();
+    var viewTop = listRect.top + gap;
+    var viewBottom = listRect.bottom - gap;
+    if (rowRect.height >= viewBottom - viewTop) {
+      linesEl.scrollTop += rowRect.top - listRect.top;
+      return;
+    }
+    if (rowRect.top < viewTop) linesEl.scrollTop += rowRect.top - viewTop;
+    else if (rowRect.bottom > viewBottom) linesEl.scrollTop += rowRect.bottom - viewBottom;
   }
 
   function isOpen() {
@@ -135,16 +165,21 @@
     overlay.classList.remove("is-on");
     drawer.classList.remove("is-open");
     document.body.classList.remove("is-cart-open");
+    if (toastEl) toastEl.classList.remove("is-on");
     if (window.__lenis && window.__lenis.start) window.__lenis.start();
     if (lastFocus && lastFocus.focus) lastFocus.focus();
   }
 
   function toast(msg) {
     if (!toastEl) return;
-    toastEl.textContent = msg;
+    // Lives in the drawer header, in normal flow, so it can never sit on the footer.
+    toastEl.textContent = "";
     toastEl.classList.add("is-on");
+    toastEl.textContent = msg;
     clearTimeout(toast.tid);
-    toast.tid = setTimeout(function () { toastEl.classList.remove("is-on"); }, 2200);
+    toast.tid = setTimeout(function () {
+      if (toastEl) toastEl.classList.remove("is-on");
+    }, 2400);
   }
 
   function inject() {
@@ -155,7 +190,10 @@
       '<div class="cart-overlay" data-cart-close hidden></div>' +
       '<aside class="cart-drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-title" hidden>' +
         '<header class="cart-drawer__head">' +
-          '<h2 id="cart-title" class="cart-drawer__title">Your bag</h2>' +
+          '<div class="cart-drawer__heading">' +
+            '<h2 id="cart-title" class="cart-drawer__title">Your bag</h2>' +
+            '<p class="cart-added" data-cart-toast role="status" aria-live="polite"></p>' +
+          '</div>' +
           '<button type="button" class="cart-drawer__close" data-cart-close aria-label="Close bag">' +
             '<svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4l12 12M16 4L4 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>' +
           '</button>' +
@@ -172,8 +210,7 @@
           '<a class="btn btn--solid" data-cart-checkout href="checkout.html">Checkout</a>' +
           '<button type="button" class="btn btn--ghost" data-cart-close>Continue shopping</button>' +
         '</footer>' +
-      '</aside>' +
-      '<div class="toast" data-cart-toast role="status" aria-live="polite"></div>';
+      '</aside>';
     document.body.appendChild(wrap);
     overlay = wrap.querySelector(".cart-overlay");
     drawer = wrap.querySelector(".cart-drawer");
@@ -191,8 +228,8 @@
       var p = window.mitsyProduct && window.mitsyProduct(id);
       if (!p) return;
       window.MitsyCart.add(id, 1);
-      toast(p.name + " added to bag");
       openCart();
+      toast(p.name + " added to bag");
       return;
     }
     if (e.target.closest("[data-cart-toggle]")) {
