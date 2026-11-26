@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checkout · Mitsy Beauty (demo)</title>
+<meta name="description" content="Demo checkout for Mitsy Beauty. No payment is taken.">
+<meta name="theme-color" content="#F977B6">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css?v=3">
+</head>
+<body class="page-checkout">
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav" id="nav">
+  <a class="nav__brand" href="index.html#top" aria-label="Mitsy Beauty home"><img class="nav__logo" src="img/logo-mitsy-black.svg" alt="" width="1349" height="751"></a>
+  <nav aria-label="Main">
+    <ul class="nav__links">
+      <li><a href="index.html#shades">Shades</a></li>
+      <li><a href="index.html#swipe">The swipe</a></li>
+      <li><a href="index.html#collection">Collection</a></li>
+    </ul>
+  </nav>
+  <div class="nav__actions">
+    <button class="nav__bag" type="button" data-cart-toggle aria-label="Open bag, empty">
+      <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M6 8h12l-1 13H7L6 8z"/><path d="M9 8V7a3 3 0 0 1 6 0v1"/></svg>
+      <span class="nav__count" data-cart-count hidden></span>
+    </button>
+  </div>
+</header>
+<div class="demo-banner">Demo checkout, no payment is taken. Card details stay in this browser and are never sent anywhere.</div>
+<main id="main" class="page-main">
+  <p id="checkout-empty" class="confirm-empty" hidden>Your bag is empty. <a href="index.html#collection">Shop the shades</a> first.</p>
+  <div class="chk">
+    <form class="chk__form" id="checkout-form" novalidate>
+      <h1>Checkout</h1>
+      <p class="chk__lede">This is a dummy checkout for the client preview. Use any card number, for example 4242 4242 4242 4242. Nothing is charged.</p>
+
+      <section class="chk-section" aria-labelledby="contact-title">
+        <h2 id="contact-title">Contact</h2>
+        <div class="fields">
+          <div class="field field--full">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" inputmode="email" autocomplete="email" required>
+          </div>
+          <div class="field field--full">
+            <label for="phone">Phone <span style="font-weight:500;letter-spacing:0;text-transform:none;color:var(--muted)">(optional)</span></label>
+            <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel">
+          </div>
+        </div>
+      </section>
+
+      <section class="chk-section" aria-labelledby="ship-title">
+        <h2 id="ship-title">Shipping address</h2>
+        <div class="fields">
+          <div class="field">
+            <label for="firstName">First name</label>
+            <input id="firstName" name="firstName" type="text" autocomplete="given-name" required>
+          </div>
+          <div class="field">
+            <label for="lastName">Last name</label>
+            <input id="lastName" name="lastName" type="text" autocomplete="family-name" required>
+          </div>
+          <div class="field field--full">
+            <label for="address1">Address</label>
+            <input id="address1" name="address1" type="text" autocomplete="address-line1" required>
+          </div>
+          <div class="field field--full">
+            <label for="address2">Apartment, suite, etc. <span style="font-weight:500;letter-spacing:0;text-transform:none;color:var(--muted)">(optional)</span></label>
+            <input id="address2" name="address2" type="text" autocomplete="address-line2">
+          </div>
+          <div class="field">
+            <label for="city">City</label>
+            <input id="city" name="city" type="text" autocomplete="address-level2" required>
+          </div>
+          <div class="field">
+            <label for="region">State or region</label>
+            <input id="region" name="region" type="text" autocomplete="address-level1" required>
+          </div>
+          <div class="field">
+            <label for="postal">Postal code</label>
+            <input id="postal" name="postal" type="text" autocomplete="postal-code" required>
+          </div>
+          <div class="field">
+            <label for="country">Country</label>
+            <input id="country" name="country" type="text" autocomplete="country-name" value="United States" required>
+          </div>
+        </div>
+      </section>
+
+      <section class="chk-section" aria-labelledby="shipopt-title">
+        <h2 id="shipopt-title">Shipping</h2>
+        <div class="ship-opts">
+          <label class="ship-opt">
+            <input type="radio" name="shipping" value="standard" checked>
+            <span>Standard <span class="sample-note">Sample rate</span></span>
+            <strong>$5.00</strong>
+          </label>
+          <label class="ship-opt">
+            <input type="radio" name="shipping" value="express">
+            <span>Express <span class="sample-note">Sample rate</span></span>
+            <strong>$12.00</strong>
+          </label>
+        </div>
+      </section>
+
+      <section class="chk-section" aria-labelledby="pay-title">
+        <h2 id="pay-title">Payment</h2>
+        <p class="pay-hint">Fake card fields — any number is accepted. Try 4242 4242 4242 4242. Details are not sent to a server.</p>
+        <div class="fields">
+          <div class="field field--full">
+            <label for="cardName">Name on card</label>
+            <input id="cardName" name="cardName" type="text" autocomplete="cc-name" required>
+          </div>
+          <div class="field field--full">
+            <label for="cardNumber">Card number</label>
+            <input id="cardNumber" name="cardNumber" type="text" inputmode="numeric" autocomplete="cc-number" placeholder="4242 4242 4242 4242" required>
+          </div>
+          <div class="field">
+            <label for="cardExpiry">Expiry</label>
+            <input id="cardExpiry" name="cardExpiry" type="text" inputmode="numeric" autocomplete="cc-exp" placeholder="MM / YY" required>
+          </div>
+          <div class="field">
+            <label for="cardCvc">Security code</label>
+            <input id="cardCvc" name="cardCvc" type="text" inputmode="numeric" autocomplete="cc-csc" placeholder="123" required>
+          </div>
+        </div>
+      </section>
+
+      <button class="btn btn--solid place" type="submit">Place order</button>
+    </form>
+
+    <aside class="summary" data-order-summary aria-label="Order summary">
+      <h2>Order summary</h2>
+      <ul data-summary-lines></ul>
+      <div class="totals">
+        <div><span>Subtotal</span><span data-summary-subtotal>$0.00</span></div>
+        <div><span>Shipping <span class="sample-note">sample</span></span><span data-summary-shipping>$0.00</span></div>
+        <div class="total"><span>Total</span><span data-summary-total>$0.00</span></div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<footer class="footer">
+  <p class="wordmark" aria-hidden="true">MITSY</p>
+  <div class="footer__legal">
+    <p>© 2026 Mitsy Beauty. Preview site, content not final.</p>
+    <ul class="footer__links"><li><a href="index.html">Home</a></li><li><a href="#">Contact</a></li><li><a href="#">Privacy</a></li></ul>
+  </div>
+</footer>
+<script src="js/products.js?v=3"></script>
+<script src="js/cart.js?v=3"></script>
+<script src="js/checkout.js?v=3"></script>
+</body>
+</html>
