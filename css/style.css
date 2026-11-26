@@ -209,9 +209,10 @@ html:not(.motion) .shade-info{position:relative;opacity:1;visibility:visible;top
 
 /* ---------- macro ---------- */
 .macro{position:relative;margin:0;line-height:0}
-.macro img{width:100%;height:auto;aspect-ratio:3/2;max-height:72vh;object-fit:cover;object-position:center 62%}
+.macro img{width:100%;height:auto;aspect-ratio:1536/1021;max-height:none;object-fit:contain;transform:none}
 @media (max-width:760px){
-  .macro img{aspect-ratio:4/5;max-height:none;height:auto;min-height:52vh;object-position:center 70%}
+  .macro{padding:0}
+  .macro img{aspect-ratio:1536/1021;min-height:0;max-height:none;height:auto;object-fit:contain}
 }
 
 /* ---------- 3 SWIPE ---------- */
@@ -228,7 +229,7 @@ html:not(.motion) .swipe__copy,html:not(.motion) .swipe__stage{position:relative
 html:not(.motion) .swipe__stage{width:min(42vw,280px);margin:1.5rem auto 0}
 html:not(.motion) .swipe__wand{position:absolute;left:52%;top:6%;width:120%;transform:rotate(-28deg);transform-origin:20% 80%}
 @media (max-width:760px){
-  .swipe{margin-top:1.5rem}
+  .swipe{margin-top:0}
   .swipe__pin{min-height:0;height:auto;padding:1.75rem var(--gutter) 2.5rem;display:flex;flex-direction:column;gap:1.25rem}
   .swipe__stroke{display:none}
   .swipe__copy{position:static;width:auto;left:auto;right:auto;top:auto}
